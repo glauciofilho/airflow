@@ -1,0 +1,5 @@
+apache-airflow==2.7.0
+duckdb
+dbt-duckdb
+apache-airflow-providers-postgres
+apache-airflow-providers-amazon

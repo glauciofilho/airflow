@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  airflow-webserver:
+    build: . # Diz ao Coolify para usar o Dockerfile acima
+    container_name: airflow_webserver
+    command: webserver
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW_DATABASE_URL}
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+
+  airflow-scheduler:
+    build: . # Usa a mesma imagem customizada
+    container_name: airflow_scheduler
+    command: scheduler
+    depends_on:
+      airflow-webserver:
+        condition: service_healthy
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW_DATABASE_URL}
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
