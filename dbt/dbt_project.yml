@@ -1,0 +1,16 @@
+name: 'projeto_analitico'
+version: '1.0.0'
+config-version: 2
+
+# Diz ao dbt para usar o profile 'duckdb_profile'
+profile: 'default'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+analysis-paths: ["analyses"]
+
+models:
+  projeto_analitico:
+    example:
+      +materialized: table
