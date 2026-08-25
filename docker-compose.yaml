@@ -1,4 +1,10 @@
 version: "3.8"
+networks:
+  default:
+    driver: bridge
+  internal:
+    external: true
+
 services:
   airflow-webserver:
     build: . # Diz ao Coolify para usar o Dockerfile acima
@@ -15,6 +21,9 @@ services:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW_DATABASE_URL}
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    networks:
+      - default
+      - internal
 
   airflow-scheduler:
     build: . # Usa a mesma imagem customizada
@@ -26,3 +35,6 @@ services:
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW_DATABASE_URL}
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    networks:
+      - default
+      - internal
