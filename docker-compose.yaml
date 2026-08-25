@@ -9,8 +9,8 @@ services:
   airflow-webserver:
     build: . # Diz ao Coolify para usar o Dockerfile acima
     container_name: airflow_webserver
-    command: webserver
-    ports:
+    command: bash -c "airflow db migrate && airflow webserver"
+    expose:
       - "8080"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
