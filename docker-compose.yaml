@@ -12,6 +12,11 @@ services:
     command: bash -c "airflow db migrate && airflow webserver"
     expose:
       - "8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW_DATABASE_URL}
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
@@ -24,6 +29,9 @@ services:
     build: . # Usa a mesma imagem customizada
     container_name: airflow_scheduler
     command: scheduler
+    depends_on:
+      airflow-webserver:
+        condition: service_healthy
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW_DATABASE_URL}
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
