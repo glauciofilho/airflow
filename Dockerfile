@@ -1,9 +1,9 @@
-FROM apache/airflow:2.7.0-python3.10
+ARG AIRFLOW_VERSION=3.1.0
+FROM apache/airflow:${AIRFLOW_VERSION}
+ARG AIRFLOW_VERSION
 
-# Instala as dependências de Python
-COPY requirements.txt /requirements.txt
-RUN pip install --no-cache-dir -r /requirements.txt
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir "apache-airflow==${AIRFLOW_VERSION}" -r /tmp/requirements.txt
 
-# Copia as pastas do seu projeto para dentro da imagem
-COPY --chown=airflow:root dags/ /opt/airflow/dags/
-COPY --chown=airflow:root dbt/ /opt/airflow/dbt/
+COPY --chown=airflow:0 --chmod=755 entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
